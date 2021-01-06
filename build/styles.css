@@ -27,7 +27,7 @@ html, body {
     justify-content: center;
 }
 
-#gallery-view img {
+#gallery-view img, #gallery-view video {
     max-width: 100%;
     height: 100%;
 }
