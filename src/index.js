@@ -38,12 +38,49 @@ class Gallery extends React.Component {
         this.state = {index: undefined, view_visible: false};
     }
 
+    componentDidMount() {
+        window.addEventListener("keydown", e => {
+            this.handleKeyDown(e.key);
+        });
+    }
+
+    handleKeyDown(key) {
+        if (key === "ArrowRight")
+            this.nextItem();
+        else if (key === "ArrowLeft")
+            this.previousItem();
+    }
+
     previewClick(index) {
         this.setState({index, view_visible: true});
     }
 
     closeView() {
         this.setState({view_visible: false});
+    }
+
+    nextItem() {
+        this.setState((old_state) => {
+            const length = this.props.items.length;
+            let index = old_state.index + 1;
+
+            if (index >= length - 1)
+                return {};
+            else
+                return {index};
+        });
+    }
+
+    previousItem() {
+        this.setState((old_state) => {
+            const length = this.props.items.length;
+            let index = old_state.index - 1;
+
+            if (index < 0)
+                return {};
+            else
+                return {index};
+        });
     }
 
     render() {
