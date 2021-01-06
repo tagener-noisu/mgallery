@@ -8,20 +8,57 @@ const constants = {
 function GalleryItem(props) {
     const {preview_url} = props.contents;
 
-    return <div className="gallery-item">
+    return <div className="gallery-item" onClick={props.onClick}>
         <img className="gallery-img" src={preview_url}></img>
     </div>;
 }
 
-function Gallery(props) {
-    return <div id="gallery">
-        <div id="gallery-grid">{
-            props.items.map(i => {
-                return <GalleryItem key={i.id} contents={i} />;
-            })
-        }</div>
-        <button onClick={props.load_more}>Load more</button>
-    </div>;
+function GalleryView(props) {
+    if (!props.visible)
+        return <div />;
+
+    const {type, url, remote_url} = props.contents;
+    const result_url = (remote_url === null ? url : remote_url);
+
+    if (type === "image") {
+
+        return <div id="gallery-view" onClick={props.closeView}>
+            <img src={result_url}></img>
+        </div>;
+    } else {
+        return <div id="gallery-view" onClick={props.closeView}>
+            <video autoPlay loop src={result_url}></video>
+        </div>;
+    }
+}
+
+class Gallery extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {index: undefined, view_visible: false};
+    }
+
+    previewClick(index) {
+        this.setState({index, view_visible: true});
+    }
+
+    closeView() {
+        this.setState({view_visible: false});
+    }
+
+    render() {
+        const {index, view_visible} = this.state;
+
+        return <div id="gallery">
+            <GalleryView contents={this.props.items[index]} visible={view_visible} closeView={() => this.closeView()} />
+            <div id="gallery-grid">{
+                this.props.items.map((x, i) => {
+                    return <GalleryItem key={x.id} contents={x} onClick={() => this.previewClick(i)} />;
+                })
+            }</div>
+            <button onClick={this.props.load_more}>Load more</button>
+        </div>;
+    }
 }
 
 class TagViewerInputs extends React.Component {
@@ -60,7 +97,8 @@ class TagViewer extends React.Component {
             server: this.props.server,
             tag: this.props.tag,
             items: [],
-            last_id: undefined
+            last_id: undefined,
+            loading: false,
         };
         this.limit = constants.number_of_items_to_load;
     }
@@ -76,11 +114,15 @@ class TagViewer extends React.Component {
                 return acc.concat(item.media_attachments);
             }, []);
 
-            return {items: old_state.items.concat(new_items), last_id};
+            return {items: old_state.items.concat(new_items), last_id, loading: false};
         });
     }
 
     loadMore() {
+        if (this.state.loading) return;
+
+        this.setState({loading: true});
+
         const {server, tag} = this.state;
         let url =
             `${server}/api/v1/timelines/tag/${tag}?only_media=true&limit=${this.limit}`;
@@ -96,10 +138,10 @@ class TagViewer extends React.Component {
     componentDidMount() {
         this.loadMore();
 
-        //window.addEventListener("scroll", () => {
-        //    if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight - 400)
-        //        this.loadMore();
-        //});
+        window.addEventListener("scroll", () => {
+            if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight - 400)
+                this.loadMore();
+        });
     }
 
     changeTagOrServer(new_server, new_tag) {
