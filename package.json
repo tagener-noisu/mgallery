@@ -1,6 +1,6 @@
 {
-  "name": "react-webpack-template",
-  "version": "0.0.0",
+  "name": "mastodon-gallery",
+  "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "BSD-2-Clause",
+  "license": "GPLv2",
   "dependencies": {
     "react": "^0.14.5",
     "react-dom": "^0.14.5"
