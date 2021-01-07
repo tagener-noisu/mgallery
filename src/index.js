@@ -17,17 +17,16 @@ function GalleryView(props) {
     if (!props.visible)
         return <div />;
 
-    const {type, url, remote_url} = props.contents;
-    const result_url = (remote_url === null ? url : remote_url);
+    const {type, url} = props.contents;
 
     if (type === "image") {
 
         return <div id="gallery-view" onClick={props.closeView}>
-            <img src={result_url}></img>
+            <img src={url}></img>
         </div>;
     } else {
         return <div id="gallery-view" onClick={props.closeView}>
-            <video autoPlay loop src={result_url}></video>
+            <video autoPlay loop src={url}></video>
         </div>;
     }
 }
