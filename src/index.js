@@ -4,6 +4,8 @@ const ReactDOM = require('react-dom');
 const constants = {
     number_of_items_to_load: 20,
     preload_margin: 1000,
+    number_of_columns: 3,
+    column_width: 400,
 }
 
 function GalleryItem(props) {
@@ -85,14 +87,29 @@ class Gallery extends React.Component {
 
     render() {
         const {index, view_visible} = this.state;
+        const {number_of_columns, column_width} = constants;
 
-        return <div id="gallery">
+        const empty_columns = [];
+        for (let i = 0; i < number_of_columns; ++i)
+            empty_columns.push([]);
+
+        const columns = this.props.items.reduce((columns, x, i) => {
+            const column = i % number_of_columns;
+            const el = <GalleryItem key={x.id} contents={x} onClick={() => this.previewClick(i)} />;
+            columns[column].push(el);
+
+            return columns;
+        }, empty_columns);
+
+        const grid_template_col = `repeat(${number_of_columns}, ${column_width}px)`;
+        const grid = <div id="gallery-grid" style={{gridTemplateColumns: grid_template_col}}>{
+            columns.map((c, i) => <div key={i} className="gallery-column">{c}</div>)
+        }</div>;
+
+        const max_width = column_width * number_of_columns;
+        return <div id="gallery" style={{maxWidth: `${max_width}px`}}>
             <GalleryView contents={this.props.items[index]} visible={view_visible} closeView={() => this.closeView()} />
-            <div id="gallery-grid">{
-                this.props.items.map((x, i) => {
-                    return <GalleryItem key={x.id} contents={x} onClick={() => this.previewClick(i)} />;
-                })
-            }</div>
+            {grid}
             <button onClick={this.props.load_more}>Load more</button>
         </div>;
     }
