@@ -10,22 +10,24 @@ class TagViewerInputs extends React.Component {
             server: this.props.server,
             tag: this.props.tag,
         }
+        this.changeServer = this.changeServer.bind(this);
+        this.changeTag = this.changeTag.bind(this);
     }
 
-    changeServer(server) {
-        this.setState({server});
+    changeServer(e) {
+        this.setState({server: e.target.value});
     }
 
-    changeTag(tag) {
-        this.setState({tag});
+    changeTag(e) {
+        this.setState({tag: e.target.value});
     }
 
     render() {
         const {server, tag} = this.state;
 
         return <div>
-            <input value={server} onChange={e => this.changeServer(e.target.value)}></input>
-            <input value={tag} onChange={e => this.changeTag(e.target.value)}></input>
+            <input value={server} onChange={this.changeServer}></input>
+            <input value={tag} onChange={this.changeTag}></input>
             <button onClick={() => this.props.onChange(server, tag)}>Go</button>
         </div>;
     }
@@ -55,18 +57,23 @@ class TagViewer extends React.Component {
                 return acc.concat(item.media_attachments);
             }, []);
 
-            return {items: old_state.items.concat(new_items), last_id, loading: false};
+            return {
+                last_id,
+                items: old_state.items.concat(new_items),
+                loading: false
+            };
         });
     }
 
     loadMore() {
-        if (this.state.loading) return;
+        if (this.state.loading)
+            return;
 
         this.setState({loading: true});
-
         const {server, tag} = this.state;
-        let url =
-            `${server}/api/v1/timelines/tag/${tag}?only_media=true&limit=${this.limit}`;
+
+        let url = `${server}/api/v1/timelines/tag/${tag}`;
+        url = `${url}?only_media=true&limit=${this.limit}`;
 
         if (this.state.last_id !== undefined)
             url = `${url}&max_id=${this.state.last_id}`
@@ -91,7 +98,12 @@ class TagViewer extends React.Component {
     changeTagOrServer(new_server, new_tag) {
         this.setState(old_state => {
             if (old_state.server !== new_server || old_state.tag !== new_tag)
-                return {items: [], last_id: undefined, server: new_server, tag: new_tag};
+                return {
+                    items: [],
+                    last_id: undefined,
+                    server: new_server,
+                    tag: new_tag
+                };
             else
                 return {};
         }, this.loadMore);

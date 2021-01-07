@@ -88,20 +88,30 @@ class Gallery extends React.Component {
 
         const columns = this.props.items.reduce((columns, x, i) => {
             const column = i % number_of_columns;
-            const el = <GalleryItem key={x.id} contents={x} onClick={() => this.previewClick(i)} />;
+            const el = <GalleryItem
+                key={x.id} contents={x} onClick={() => this.previewClick(i)} />;
+
             columns[column].push(el);
 
             return columns;
         }, empty_columns);
 
-        const grid_template_col = `repeat(${number_of_columns}, ${column_width}px)`;
-        const grid = <div id="gallery-grid" style={{gridTemplateColumns: grid_template_col}}>{
-            columns.map((c, i) => <div key={i} className="gallery-column">{c}</div>)
+        const grid_style = {gridTemplateColumns:
+            `repeat(${number_of_columns}, ${column_width}px)`};
+
+        const grid = <div id="gallery-grid" style={grid_style}>{
+            columns.map((c, i) =>
+                <div key={i} className="gallery-column">{c}</div>
+            )
         }</div>;
 
         const max_width = column_width * number_of_columns;
         return <div id="gallery" style={{maxWidth: `${max_width}px`}}>
-            <GalleryView contents={this.props.items[index]} visible={view_visible} closeView={() => this.closeView()} />
+            <GalleryView
+                contents={this.props.items[index]}
+                visible={view_visible}
+                closeView={() => this.closeView()}
+            />
             {grid}
             <button onClick={this.props.load_more}>Load more</button>
         </div>;
