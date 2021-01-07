@@ -16,22 +16,22 @@ function GalleryItem(props) {
     </div>;
 }
 
+function GalleryViewObject(props) {
+    if (props.type === "image")
+        return <img src={props.url}></img>;
+    else
+        return <video autoPlay loop src={props.url}></video>;
+}
+
 function GalleryView(props) {
     if (!props.visible)
         return <div />;
 
     const {type, url} = props.contents;
 
-    if (type === "image") {
-
-        return <div id="gallery-view" onClick={props.closeView}>
-            <img src={url}></img>
-        </div>;
-    } else {
-        return <div id="gallery-view" onClick={props.closeView}>
-            <video autoPlay loop src={url}></video>
-        </div>;
-    }
+    return <div id="gallery-view" onClick={props.closeView}>
+        <GalleryViewObject type={type} url={url} />
+    </div>;
 }
 
 class Gallery extends React.Component {
