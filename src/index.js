@@ -3,6 +3,7 @@ const ReactDOM = require('react-dom');
 
 const constants = {
     number_of_items_to_load: 20,
+    preload_margin: 1000,
 }
 
 function GalleryItem(props) {
@@ -175,8 +176,11 @@ class TagViewer extends React.Component {
         this.loadMore();
 
         window.addEventListener("scroll", () => {
-            if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight - 400)
+            if (window.innerHeight + window.pageYOffset >=
+                document.body.offsetHeight - constants.preload_margin)
+            {
                 this.loadMore();
+            }
         });
     }
 
