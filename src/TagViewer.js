@@ -54,7 +54,15 @@ class TagViewer extends React.Component {
             const last_id = items[items.length - 1].id;
 
             const new_items = items.reduce((acc, item) => {
-                return acc.concat(item.media_attachments);
+                const media = item.media_attachments.map(a => {
+                    const item_props = {
+                        post_url: item.url
+                    };
+
+                    return Object.assign(item_props, a);
+                });
+
+                return acc.concat(media);
             }, []);
 
             return {

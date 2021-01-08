@@ -20,10 +20,13 @@ function GalleryView(props) {
     if (!props.visible)
         return <div />;
 
-    const {type, url} = props.contents;
+    const {type, url, post_url} = props.contents;
 
     return <div id="gallery-view" onClick={props.closeView}>
         <GalleryViewObject type={type} url={url} />
+        <div id="gallery-view-meta">
+            <a href={post_url}>Open status</a>
+        </div>
     </div>;
 }
 
