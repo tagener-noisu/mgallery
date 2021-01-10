@@ -37,8 +37,18 @@ class Gallery extends React.Component {
     }
 
     componentDidMount() {
+        this.props.load_more();
+
         window.addEventListener("keydown", e => {
             this.handleKeyDown(e.key);
+        });
+
+        window.addEventListener("scroll", () => {
+            if (window.innerHeight + window.pageYOffset >=
+                document.body.offsetHeight - constants.preload_margin)
+            {
+                this.props.load_more();
+            }
         });
     }
 

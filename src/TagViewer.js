@@ -32,6 +32,7 @@ class TagViewerInputs extends React.Component {
         </div>;
     }
 }
+
 class TagViewer extends React.Component {
     constructor(props) {
         super(props);
@@ -89,18 +90,6 @@ class TagViewer extends React.Component {
         fetch(url)
             .then(response => response.json())
             .then(items => this.appendItems(items));
-    }
-
-    componentDidMount() {
-        this.loadMore();
-
-        window.addEventListener("scroll", () => {
-            if (window.innerHeight + window.pageYOffset >=
-                document.body.offsetHeight - constants.preload_margin)
-            {
-                this.loadMore();
-            }
-        });
     }
 
     changeTagOrServer(new_server, new_tag) {
